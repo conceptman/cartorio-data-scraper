@@ -3,8 +3,6 @@ package com.example.cartorioapp
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
@@ -33,13 +31,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        val btnScrape = findViewById<Button>(R.id.btnScrape)
-        val btnClear = findViewById<Button>(R.id.btnClear)
-        val etSearch = findViewById<EditText>(R.id.etSearch)
+        val btnStart = findViewById<Button>(R.id.btnStart)
+        val btnStop = findViewById<Button>(R.id.btnStop)
+        val btnViewFile = findViewById<Button>(R.id.btnViewFile)
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
         val tvStatus = findViewById<TextView>(R.id.tvStatus)
-        val tvLogs = findViewById<TextView>(R.id.tvLogs)
-        val logScrollView = findViewById<ScrollView>(R.id.logScrollView)
         val spinnerUf = findViewById<Spinner>(R.id.spinnerUf)
 
         val ufs = listOf("AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO")
@@ -56,44 +52,36 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.isSyncing.observe(this) { isSyncing ->
-            progressBar.visibility = if (isSyncing) View.VISIBLE else View.GONE
-            btnScrape.isEnabled = !isSyncing
+            progressBar.visibility = if (isSyncing) View.VISIBLE else View.INVISIBLE
+            btnStart.isEnabled = !isSyncing
+            btnStop.isEnabled = isSyncing
             spinnerUf.isEnabled = !isSyncing
         }
 
         viewModel.statusMessage.observe(this) {
             tvStatus.text = "Status: $it"
-        }
-
-        viewModel.logs.observe(this) {
-            tvLogs.text = it
-            logScrollView.post {
-                logScrollView.fullScroll(View.FOCUS_DOWN)
+            if (it.startsWith("Finished")) {
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
             }
         }
 
-        viewModel.exportedFile.observe(this) { file ->
-            if (file != null) {
-                shareFile(file)
-            }
-        }
-
-        btnScrape.setOnClickListener {
+        btnStart.setOnClickListener {
             val selectedUf = spinnerUf.selectedItem.toString()
-            viewModel.scrapeState(selectedUf)
+            viewModel.startScrape(selectedUf)
         }
 
-        btnClear.setOnClickListener {
-            viewModel.clearDatabase()
+        btnStop.setOnClickListener {
+            viewModel.stopScrape()
         }
 
-        etSearch.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                viewModel.filter(s.toString())
+        btnViewFile.setOnClickListener {
+            val lastFile = viewModel.getLastExport()
+            if (lastFile != null) {
+                shareFile(lastFile)
+            } else {
+                Toast.makeText(this, "No data file found. Scrape first.", Toast.LENGTH_SHORT).show()
             }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+        }
 
         viewModel.loadData()
     }
@@ -101,14 +89,13 @@ class MainActivity : AppCompatActivity() {
     private fun shareFile(file: File) {
         try {
             val uri = FileProvider.getUriForFile(this, "${packageName}.provider", file)
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "application/json"
-                putExtra(Intent.EXTRA_STREAM, uri)
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/json")
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            startActivity(Intent.createChooser(intent, "Share Cartorio Data"))
+            startActivity(Intent.createChooser(intent, "Open Data File"))
         } catch (e: Exception) {
-            Toast.makeText(this, "Sharing failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Could not open file: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 }

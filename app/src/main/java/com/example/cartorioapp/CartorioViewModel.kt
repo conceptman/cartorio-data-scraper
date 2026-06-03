@@ -1,32 +1,26 @@
 package com.example.cartorioapp
 
 import androidx.lifecycle.*
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 
 class CartorioViewModel(private val repository: CartorioRepository, private val fileManager: FileManager) : ViewModel() {
 
     private val _allCartorios = MutableLiveData<List<Cartorio>>()
-
     private val _filteredCartorios = MutableLiveData<List<Cartorio>>()
     val cartorios: LiveData<List<Cartorio>> = _filteredCartorios
 
     private val _isSyncing = MutableLiveData<Boolean>(false)
     val isSyncing: LiveData<Boolean> = _isSyncing
 
-    private val _statusMessage = MutableLiveData<String>()
+    private val _statusMessage = MutableLiveData<String>("Idle")
     val statusMessage: LiveData<String> = _statusMessage
-
-    private val _logs = MutableLiveData<String>("")
-    val logs: LiveData<String> = _logs
 
     private val _exportedFile = MutableLiveData<File?>()
     val exportedFile: LiveData<File?> = _exportedFile
 
-    fun addLog(message: String) {
-        val currentLogs = _logs.value ?: ""
-        _logs.postValue("$currentLogs\n> $message")
-    }
+    private var scrapeJob: Job? = null
 
     fun loadData() {
         viewModelScope.launch {
@@ -36,48 +30,39 @@ class CartorioViewModel(private val repository: CartorioRepository, private val 
         }
     }
 
-    fun filter(query: String) {
-        val all = _allCartorios.value ?: emptyList()
-        if (query.isEmpty()) {
-            _filteredCartorios.value = all
-        } else {
-            _filteredCartorios.value = all.filter {
-                it.name.contains(query, ignoreCase = true) || it.cns.contains(query)
-            }
-        }
-    }
-
-    fun scrapeState(uf: String) {
-        viewModelScope.launch {
+    fun startScrape(uf: String) {
+        scrapeJob = viewModelScope.launch {
             _isSyncing.value = true
             _statusMessage.value = "Scraping $uf..."
-            addLog("--- NEW SESSION ---")
-            addLog("Targeting State: $uf")
             try {
-                repository.syncDataForState(uf) { log -> addLog(log) }
-                _statusMessage.value = "Success: $uf"
-                addLog("Scrape finished. Exporting data...")
+                repository.syncDataForState(uf) { /* No internal logs to UI as requested */ }
+                _statusMessage.value = "Finished: $uf"
                 val allData = repository.getAllCartorios()
-                val file = fileManager.exportToJson(allData, "export_${uf}_${System.currentTimeMillis()}.json")
+                val file = fileManager.exportToJson(allData, "cartorio_data_$uf.json")
                 _exportedFile.value = file
-                addLog("File exported to: ${file?.name}")
                 loadData()
             } catch (e: Exception) {
-                _statusMessage.value = "Error: $uf"
-                addLog("CRITICAL ERROR: ${e.message}")
+                _statusMessage.value = "Error: ${e.message}"
             } finally {
                 _isSyncing.value = false
             }
         }
     }
 
-    fun clearDatabase() {
+    fun stopScrape() {
+        scrapeJob?.cancel()
+        _isSyncing.value = false
+        _statusMessage.value = "Stopped"
+    }
+
+    fun clearData() {
         viewModelScope.launch {
             repository.clearAll()
-            addLog("Database cleared.")
             loadData()
         }
     }
+
+    fun getLastExport(): File? = fileManager.getLastExportedFile()
 
     class Factory(private val repository: CartorioRepository, private val fileManager: FileManager) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

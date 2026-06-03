@@ -6,112 +6,71 @@
     android:layout_height="match_parent"
     android:padding="8.0dip">
 
-    <Spinner
-        android:id="@+id/spinnerUf"
-        android:layout_width="0.0dip"
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8.0dip"
-        app:layout_constraintBottom_toBottomOf="@+id/btnScrape"
-        app:layout_constraintEnd_toStartOf="@+id/btnScrape"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnScrape" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/btnScrape"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SCRAPE"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Spinner
+            android:id="@+id/spinnerUf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
-    <EditText
-        android:id="@+id/etSearch"
-        android:layout_width="0.0dip"
-        android:layout_height="wrap_content"
-        android:hint="Search name or CNS..."
-        android:inputType="text"
-        android:textSize="14.0sp"
-        app:layout_constraintEnd_toStartOf="@+id/btnClear"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnScrape" />
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="START"
+            android:layout_marginStart="4dp"/>
 
-    <Button
-        android:id="@+id/btnClear"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CLEAR"
-        android:textColor="#ff0000"
-        app:layout_constraintBottom_toBottomOf="@+id/etSearch"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/etSearch" />
+        <Button
+            android:id="@+id/btnStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="STOP"
+            android:layout_marginStart="4dp"
+            android:enabled="false"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Idle"
-        android:textSize="12.0sp"
+        android:text="Status: Idle"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSearch" />
+        android:layout_marginTop="8dp"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/tvStatus"
-        app:layout_constraintStart_toEndOf="@+id/tvStatus"
-        app:layout_constraintTop_toTopOf="@+id/tvStatus" />
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/tvStatus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:indeterminate="true"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="0.0dip"
-        android:layout_height="0.0dip"
-        android:layout_marginTop="4.0dip"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintBottom_toTopOf="@id/btnViewFile"
         tools:listitem="@layout/item_cartorio" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btnViewFile"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.65" />
-
-    <TextView
-        android:id="@+id/tvLogTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="INTERNAL ACTIVITY LOG"
-        android:textSize="10.0sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline" />
-
-    <ScrollView
-        android:id="@+id/logScrollView"
-        android:layout_width="0.0dip"
-        android:layout_height="0.0dip"
-        android:background="#222222"
-        android:padding="4.0dip"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvLogTitle">
-
-        <TextView
-            android:id="@+id/tvLogs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:text="System ready."
-            android:textColor="#00ff00"
-            android:textSize="9.0sp" />
-    </ScrollView>
+        android:text="VIEW DATA FILE"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
