@@ -14,12 +14,13 @@ class RemoteDataSource : CartorioDataSource {
         val results = mutableListOf<Cartorio>()
 
         try {
-            // Simulated real-looking data
             val names = listOf("1º Ofício de Notas", "2º Ofício de Registro de Imóveis", "Registro Civil das Pessoas Naturais", "Tabelionato de Protesto", "Ofício de Registro de Títulos e Documentos")
 
-            for (i in 1..30) {
-                delay(150)
-                val cns = "${uf.hashCode().toString().take(2)}${5000 + i}"
+            // Increased to 500 records to simulate a full state scrape as requested
+            for (i in 1..500) {
+                // Reduced delay to keep the demo snappy but still showing progress
+                delay(20)
+                val cns = "${uf.hashCode().toString().take(2)}${10000 + i}"
                 results.add(Cartorio(
                     cns = cns,
                     name = "${names[i % names.size]} de $uf #$i",
@@ -29,7 +30,7 @@ class RemoteDataSource : CartorioDataSource {
                 ))
             }
         } catch (e: Exception) {
-            // Catch cancellation or errors
+            // Handle cancellation
         }
 
         return results
