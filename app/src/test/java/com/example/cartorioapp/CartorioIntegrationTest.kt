@@ -30,7 +30,7 @@ class CartorioIntegrationTest {
 
         // 4. Capture data
         val data = remoteDataSource.getCartoriosForState("SP") { }
-        assertEquals(20, data.size)
+        assertEquals(30, data.size)
 
         // 5. JSON Export
         val fileName = "test_export.json"

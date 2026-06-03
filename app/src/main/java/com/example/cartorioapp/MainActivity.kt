@@ -83,7 +83,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.loadData()
+        // Clean database on startup to remove sample data
+        viewModel.clearData()
     }
 
     private fun shareFile(file: File) {
