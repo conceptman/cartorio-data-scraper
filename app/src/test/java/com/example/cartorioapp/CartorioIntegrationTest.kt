@@ -30,7 +30,7 @@ class CartorioIntegrationTest {
 
         // Capture data for export (simulation of sync result)
         val data = remoteDataSource.getCartorios()
-        assertEquals(3, data.size)
+        assertEquals(4, data.size) // SP(2), RJ(1), MG(1)
 
         // 4. JSON Export
         val fileName = "test_export.json"
@@ -42,8 +42,8 @@ class CartorioIntegrationTest {
         // 5. Verify JSON content
         val content = exportedFile?.readText()
         assertNotNull(content)
-        assertEquals(true, content?.contains("11223"))
-        assertEquals(true, content?.contains("Cartório do 1º Ofício"))
+        assertEquals(true, content?.contains("11111"))
+        assertEquals(true, content?.contains("Cartório SP 1"))
 
         // Cleanup
         tempDir.deleteRecursively()

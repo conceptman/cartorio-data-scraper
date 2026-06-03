@@ -59,6 +59,7 @@ dependencies {
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.1")
+    implementation("androidx.activity:activity-ktx:1.9.0")
 
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")

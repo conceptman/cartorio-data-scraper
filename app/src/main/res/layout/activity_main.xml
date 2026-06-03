@@ -1,15 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/textView"
+    android:layout_height="match_parent"
+    android:padding="16.0dip">
+
+    <Button
+        android:id="@+id/btnSync"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cartorio App"
+        android:text="Sync Now"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSync"
+        app:layout_constraintEnd_toStartOf="@+id/btnSync"
+        app:layout_constraintTop_toTopOf="@+id/btnSync" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8.0dip"
+        android:text="Status: Idle"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSync"
+        app:layout_constraintEnd_toStartOf="@+id/progressBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnSync" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0.0dip"
+        android:layout_height="0.0dip"
+        android:layout_marginTop="16.0dip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSync"
+        tools:listitem="@layout/item_cartorio" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
