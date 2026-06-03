@@ -14,6 +14,20 @@ class CartorioRepository(
         }
     }
 
+    suspend fun syncDataWithLogs(logCallback: (String) -> Unit) = withContext(Dispatchers.IO) {
+        logCallback("Initializing remote fetch...")
+        val remoteData = remoteDataSource.getCartoriosWithLogs(logCallback)
+        logCallback("Fetched ${remoteData.size} total records.")
+
+        if (remoteData.isNotEmpty()) {
+            logCallback("Saving to local database...")
+            localDataSource.saveCartorios(remoteData)
+            logCallback("Database update complete.")
+        } else {
+            logCallback("No new data found to save.")
+        }
+    }
+
     suspend fun getAllCartorios(): List<Cartorio> = withContext(Dispatchers.IO) {
         localDataSource.getCartorios()
     }

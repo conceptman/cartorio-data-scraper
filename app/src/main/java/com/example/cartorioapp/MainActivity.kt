@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         val btnSync = findViewById<Button>(R.id.btnSync)
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
         val tvStatus = findViewById<TextView>(R.id.tvStatus)
+        val tvLogs = findViewById<TextView>(R.id.tvLogs)
+        val logScrollView = findViewById<ScrollView>(R.id.logScrollView)
 
         val adapter = CartorioAdapter(emptyList())
         recyclerView.adapter = adapter
@@ -46,6 +49,13 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.statusMessage.observe(this) {
             tvStatus.text = "Status: $it"
+        }
+
+        viewModel.logs.observe(this) {
+            tvLogs.text = it
+            logScrollView.post {
+                logScrollView.fullScroll(View.FOCUS_DOWN)
+            }
         }
 
         btnSync.setOnClickListener {

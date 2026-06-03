@@ -14,6 +14,14 @@ class CartorioViewModel(private val repository: CartorioRepository) : ViewModel(
     private val _statusMessage = MutableLiveData<String>()
     val statusMessage: LiveData<String> = _statusMessage
 
+    private val _logs = MutableLiveData<String>("")
+    val logs: LiveData<String> = _logs
+
+    fun addLog(message: String) {
+        val currentLogs = _logs.value ?: ""
+        _logs.postValue("$currentLogs\n> $message")
+    }
+
     fun loadData() {
         viewModelScope.launch {
             _cartorios.value = repository.getAllCartorios()
@@ -24,12 +32,17 @@ class CartorioViewModel(private val repository: CartorioRepository) : ViewModel(
         viewModelScope.launch {
             _isSyncing.value = true
             _statusMessage.value = "Starting sync..."
+            addLog("Sync started at ${System.currentTimeMillis()}")
             try {
-                repository.syncData()
+                // Pass a callback to the repository if possible, or just log steps here
+                addLog("Connecting to remote data source...")
+                repository.syncDataWithLogs { log -> addLog(log) }
                 _statusMessage.value = "Sync completed!"
+                addLog("Sync finished successfully.")
                 loadData()
             } catch (e: Exception) {
-                _statusMessage.value = "Sync failed: ${e.message}"
+                _statusMessage.value = "Sync failed"
+                addLog("ERROR: ${e.message}")
             } finally {
                 _isSyncing.value = false
             }

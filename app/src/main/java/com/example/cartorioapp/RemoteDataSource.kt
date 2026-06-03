@@ -1,45 +1,48 @@
 package com.example.cartorioapp
 
+import android.util.Log
 import org.jsoup.Jsoup
 import java.io.IOException
 
 class RemoteDataSource : CartorioDataSource {
 
-    override suspend fun getCartorios(): List<Cartorio> {
-        val allResults = mutableListOf<Cartorio>()
+    private val TAG = "RemoteDataSource"
 
-        // Simulating scraping multiple states
-        val states = listOf("SP", "RJ", "MG")
+    override suspend fun getCartorios(): List<Cartorio> {
+        return getCartoriosWithLogs { }
+    }
+
+    suspend fun getCartoriosWithLogs(logCallback: (String) -> Unit): List<Cartorio> {
+        val allResults = mutableListOf<Cartorio>()
+        val states = listOf("SP", "RJ", "MG", "RS", "BA")
 
         for (state in states) {
-            // Simulation of fetching and parsing for each state
-            val html = simulateHtmlForState(state)
-            allResults.addAll(parseHtml(html, state))
+            logCallback("Scanning state: $state...")
+            try {
+                // Simulate network delay
+                kotlinx.coroutines.delay(500)
+
+                val html = simulateHtmlForState(state)
+                val parsed = parseHtml(html, state)
+
+                logCallback("Found ${parsed.size} records in $state.")
+                allResults.addAll(parsed)
+            } catch (e: Exception) {
+                logCallback("FAILED to scan $state: ${e.message}")
+            }
         }
 
         return allResults
     }
 
     private fun simulateHtmlForState(state: String): String {
-        return when (state) {
-            "SP" -> """
-                <table>
-                    <tr><td>11111</td><td>Cartório SP 1</td><td>$state</td><td>Rua SP, 1</td></tr>
-                    <tr><td>11112</td><td>Cartório SP 2</td><td>$state</td><td>Rua SP, 2</td></tr>
-                </table>
-            """.trimIndent()
-            "RJ" -> """
-                <table>
-                    <tr><td>22221</td><td>Cartório RJ 1</td><td>$state</td><td>Av RJ, 1</td></tr>
-                </table>
-            """.trimIndent()
-            "MG" -> """
-                <table>
-                    <tr><td>33331</td><td>Cartório MG 1</td><td>$state</td><td>Praça MG, 1</td></tr>
-                </table>
-            """.trimIndent()
-            else -> ""
+        val sb = StringBuilder("<table>")
+        for (i in 1..10) {
+            val cns = "${state.hashCode().toString().take(2)}${1000 + i}"
+            sb.append("<tr><td>$cns</td><td>Cartório $state $i</td><td>$state</td><td>Endereço de Teste $i, $state</td></tr>")
         }
+        sb.append("</table>")
+        return sb.toString()
     }
 
     fun parseHtml(html: String, state: String = "Unknown"): List<Cartorio> {

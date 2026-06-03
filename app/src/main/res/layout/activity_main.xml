@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8.0dip"
         android:text="Status: Idle"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/btnSync"
         app:layout_constraintEnd_toStartOf="@+id/progressBar"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,10 +41,48 @@
         android:layout_width="0.0dip"
         android:layout_height="0.0dip"
         android:layout_marginTop="16.0dip"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSync"
         tools:listitem="@layout/item_cartorio" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <TextView
+        android:id="@+id/tvLogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8.0dip"
+        android:text="Internal Logs:"
+        android:textSize="12.0sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline" />
+
+    <ScrollView
+        android:id="@+id/logScrollView"
+        android:layout_width="0.0dip"
+        android:layout_height="0.0dip"
+        android:background="#f0f0f0"
+        android:padding="4.0dip"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvLogTitle">
+
+        <TextView
+            android:id="@+id/tvLogs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:text="Waiting for sync..."
+            android:textSize="10.0sp" />
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
