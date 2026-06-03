@@ -15,19 +15,23 @@ class CartorioRepository(
     }
 
     suspend fun syncDataForState(uf: String, logCallback: (String) -> Unit) = withContext(Dispatchers.IO) {
-        logCallback("Connecting to portal for $uf...")
+        logCallback("Protocol initiated for $uf.")
         val remoteData = remoteDataSource.getCartoriosForState(uf, logCallback)
 
         if (remoteData.isNotEmpty()) {
-            logCallback("Storing ${remoteData.size} records in Room...")
+            logCallback("Committing ${remoteData.size} records to Room DB...")
             localDataSource.saveCartorios(remoteData)
-            logCallback("Data saved successfully.")
+            logCallback("Transaction complete.")
         } else {
-            logCallback("Warning: No data returned from scraper.")
+            logCallback("Result: Empty dataset.")
         }
     }
 
     suspend fun getAllCartorios(): List<Cartorio> = withContext(Dispatchers.IO) {
         localDataSource.getCartorios()
+    }
+
+    suspend fun clearAll() = withContext(Dispatchers.IO) {
+        localDataSource.clearAll()
     }
 }

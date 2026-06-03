@@ -8,4 +8,8 @@ class LocalDataSource(private val cartorioDao: CartorioDao) : CartorioDataSource
     suspend fun saveCartorios(cartorios: List<Cartorio>) {
         cartorioDao.insertAll(cartorios)
     }
+
+    suspend fun clearAll() {
+        cartorioDao.deleteAll()
+    }
 }

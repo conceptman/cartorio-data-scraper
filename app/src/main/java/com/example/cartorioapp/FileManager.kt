@@ -34,17 +34,8 @@ open class FileManager(private val context: Context) {
         }
     }
 
-    fun readJson(fileName: String): String? {
-        return try {
-            val file = File(getCartorioDataFolder(), fileName)
-            if (file.exists()) {
-                file.readText()
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
+    fun getLastExportedFile(): File? {
+        val folder = getCartorioDataFolder()
+        return folder.listFiles()?.sortedByDescending { it.lastModified() }?.firstOrNull()
     }
 }

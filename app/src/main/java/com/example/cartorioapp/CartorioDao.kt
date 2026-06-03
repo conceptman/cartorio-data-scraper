@@ -18,4 +18,7 @@ interface CartorioDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(cartorio: Cartorio)
+
+    @Query("DELETE FROM cartorios")
+    suspend fun deleteAll()
 }

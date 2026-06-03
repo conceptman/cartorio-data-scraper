@@ -20,9 +20,40 @@
         android:id="@+id/btnScrape"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scrape UF"
+        android:text="SCRAPE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:hint="Search name or CNS..."
+        android:inputType="text"
+        android:textSize="14.0sp"
+        app:layout_constraintEnd_toStartOf="@+id/btnClear"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnScrape" />
+
+    <Button
+        android:id="@+id/btnClear"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CLEAR"
+        android:textColor="#ff0000"
+        app:layout_constraintBottom_toBottomOf="@+id/etSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etSearch" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Idle"
+        android:textSize="12.0sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etSearch" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -30,25 +61,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/btnScrape"
-        app:layout_constraintEnd_toStartOf="@+id/btnScrape"
-        app:layout_constraintTop_toTopOf="@+id/btnScrape" />
-
-    <TextView
-        android:id="@+id/tvStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8.0dip"
-        android:text="Status: Idle"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnScrape" />
+        app:layout_constraintBottom_toBottomOf="@+id/tvStatus"
+        app:layout_constraintStart_toEndOf="@+id/tvStatus"
+        app:layout_constraintTop_toTopOf="@+id/tvStatus" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0.0dip"
         android:layout_height="0.0dip"
-        android:layout_marginTop="8.0dip"
+        android:layout_marginTop="4.0dip"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,15 +81,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6" />
+        app:layout_constraintGuide_percent="0.65" />
 
     <TextView
         android:id="@+id/tvLogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4.0dip"
-        android:text="Scraper Logs:"
-        android:textSize="12.0sp"
+        android:text="INTERNAL ACTIVITY LOG"
+        android:textSize="10.0sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideline" />
@@ -77,7 +97,7 @@
         android:id="@+id/logScrollView"
         android:layout_width="0.0dip"
         android:layout_height="0.0dip"
-        android:background="#e8e8e8"
+        android:background="#222222"
         android:padding="4.0dip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,8 +109,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="monospace"
-            android:text="Select state and press Scrape UF"
-            android:textSize="10.0sp" />
+            android:text="System ready."
+            android:textColor="#00ff00"
+            android:textSize="9.0sp" />
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
