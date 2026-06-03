@@ -14,17 +14,16 @@ class CartorioRepository(
         }
     }
 
-    suspend fun syncDataWithLogs(logCallback: (String) -> Unit) = withContext(Dispatchers.IO) {
-        logCallback("Initializing remote fetch...")
-        val remoteData = remoteDataSource.getCartoriosWithLogs(logCallback)
-        logCallback("Fetched ${remoteData.size} total records.")
+    suspend fun syncDataForState(uf: String, logCallback: (String) -> Unit) = withContext(Dispatchers.IO) {
+        logCallback("Connecting to portal for $uf...")
+        val remoteData = remoteDataSource.getCartoriosForState(uf, logCallback)
 
         if (remoteData.isNotEmpty()) {
-            logCallback("Saving to local database...")
+            logCallback("Storing ${remoteData.size} records in Room...")
             localDataSource.saveCartorios(remoteData)
-            logCallback("Database update complete.")
+            logCallback("Data saved successfully.")
         } else {
-            logCallback("No new data found to save.")
+            logCallback("Warning: No data returned from scraper.")
         }
     }
 

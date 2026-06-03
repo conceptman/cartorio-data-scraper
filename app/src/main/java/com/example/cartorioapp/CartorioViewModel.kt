@@ -28,20 +28,18 @@ class CartorioViewModel(private val repository: CartorioRepository) : ViewModel(
         }
     }
 
-    fun syncData() {
+    fun scrapeState(uf: String) {
         viewModelScope.launch {
             _isSyncing.value = true
-            _statusMessage.value = "Starting sync..."
-            addLog("Sync started at ${System.currentTimeMillis()}")
+            _statusMessage.value = "Scraping $uf..."
+            addLog("Starting scraper for state: $uf")
             try {
-                // Pass a callback to the repository if possible, or just log steps here
-                addLog("Connecting to remote data source...")
-                repository.syncDataWithLogs { log -> addLog(log) }
-                _statusMessage.value = "Sync completed!"
-                addLog("Sync finished successfully.")
+                repository.syncDataForState(uf) { log -> addLog(log) }
+                _statusMessage.value = "Scrape $uf completed!"
+                addLog("Successfully completed scraping for $uf.")
                 loadData()
             } catch (e: Exception) {
-                _statusMessage.value = "Sync failed"
+                _statusMessage.value = "Scrape $uf failed"
                 addLog("ERROR: ${e.message}")
             } finally {
                 _isSyncing.value = false

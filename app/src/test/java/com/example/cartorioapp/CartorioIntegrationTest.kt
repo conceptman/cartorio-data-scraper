@@ -26,11 +26,11 @@ class CartorioIntegrationTest {
         }
 
         // 3. Sync Data (Fetch -> Parsing -> Room Insert mock)
-        repository.syncData()
+        repository.syncDataForState("SP") { }
 
         // Capture data for export (simulation of sync result)
-        val data = remoteDataSource.getCartorios()
-        assertEquals(50, data.size) // 5 states * 10 records
+        val data = remoteDataSource.getCartoriosForState("SP") { }
+        assertEquals(50, data.size)
 
         // 4. JSON Export
         val fileName = "test_export.json"
@@ -42,7 +42,7 @@ class CartorioIntegrationTest {
         // 5. Verify JSON content
         val content = exportedFile?.readText()
         assertNotNull(content)
-        assertEquals(true, content?.contains("Cartório SP 1"))
+        assertEquals(true, content?.contains("Cartório de Registro Civil de SP"))
 
         // Cleanup
         tempDir.deleteRecursively()
